@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Music App Android</string>
+    <string name="shuffle_btn">Shuffle</string>
+    <string name="favorites_btn">Favorites</string>
+    <string name="playlist_btn">Playlist</string>
+    <string name="total_song">Total Songs</string>
+</resources>
