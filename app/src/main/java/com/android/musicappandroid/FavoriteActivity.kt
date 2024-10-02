@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.android.musicappandroid.databinding.ActivityPlayerBinding
 
-class PlayerActivity : AppCompatActivity() {
+class FavoriteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
 
@@ -13,6 +13,5 @@ class PlayerActivity : AppCompatActivity() {
         setTheme(R.style.Theme_MusicAppAndroid)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
     }
 }
