@@ -10,7 +10,7 @@ class FavoriteActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(R.style.Theme_MusicAppAndroid)
+        setTheme(R.style.darkSlateBlue)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }

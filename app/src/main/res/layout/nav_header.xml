@@ -5,7 +5,7 @@
     android:padding="16dp"
     android:background="@color/dark_slate_blue"
     android:orientation="vertical"
-    android:layout_marginTop="50dp"
+    android:layout_marginTop="55dp"
     >
 
     <ImageView
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/name_login"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textColor="@color/white"
         android:paddingTop="5dp" />
 
