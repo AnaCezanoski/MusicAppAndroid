@@ -13,5 +13,6 @@ class FavoriteActivity : AppCompatActivity() {
         setTheme(R.style.darkSlateBlue)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.backBtn.setOnClickListener { finish() }
     }
 }
