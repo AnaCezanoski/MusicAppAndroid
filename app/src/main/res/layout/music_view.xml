@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -31,15 +32,15 @@
         android:id="@+id/songAlbumMV"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:text="@string/song_album"
-        android:layout_toEndOf="@+id/imageMV"
-        android:layout_toStartOf="@+id/songDuration"
-        android:textColor="@color/black"
-        android:gravity="center_vertical"
         android:layout_marginStart="5dp"
-        android:singleLine="true"
         android:layout_marginTop="30dp"
-        />
+        android:layout_toStartOf="@+id/songDuration"
+        android:layout_toEndOf="@+id/imageMV"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="@string/song_album"
+        android:textColor="@color/black"
+        tools:ignore="TextSizeCheck" />
 
     <TextView
         android:id="@+id/songDuration"

@@ -19,12 +19,13 @@
             android:id="@+id/backBtn"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:src="@drawable/back_icon"
-            android:contentDescription="@string/back_btn"
-            app:tint="@color/black"
             android:layout_marginStart="5dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/back_btn"
             android:padding="5dp"
-            android:background="@android:color/transparent" />
+            android:src="@drawable/back_icon"
+            app:tint="@color/black"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
             android:layout_width="0dp"
@@ -40,11 +41,12 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/favorite_empty_icon"
-            android:background="@android:color/transparent"
             android:layout_marginEnd="5dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/favorite_empty_btn"
+            android:src="@drawable/favorite_empty_icon"
             app:tint="@android:color/holo_red_dark"
-            android:contentDescription="@string/favorite_empty_btn" />
+            tools:ignore="TouchTargetSizeCheck" />
     </LinearLayout>
     
     <com.google.android.material.imageview.ShapeableImageView
@@ -78,16 +80,18 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/light_steel_blue"
             app:icon="@drawable/previous_icon"
-            app:iconSize="40dp" />
+            app:iconSize="40dp"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/playPauseBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="25dp"
             android:backgroundTint="@color/light_steel_blue"
             app:icon="@drawable/pause_icon"
             app:iconSize="50dp"
-            android:layout_marginHorizontal="25dp" />
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/nextBtn"
@@ -95,7 +99,8 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/light_steel_blue"
             app:icon="@drawable/next_icon"
-            app:iconSize="40dp" />
+            app:iconSize="40dp"
+            tools:ignore="SpeakableTextPresentCheck" />
     </LinearLayout>
     
     <LinearLayout
@@ -113,7 +118,7 @@
             android:gravity="center"/>
         
         <androidx.appcompat.widget.AppCompatSeekBar
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:progressTint="@color/light_steel_blue"

@@ -1,6 +1,7 @@
 package com.android.musicappandroid
 
 import android.annotation.SuppressLint
+import android.app.Service.STOP_FOREGROUND_REMOVE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                         .setMessage("Close app?")
                         .setPositiveButton("Yes") {_, _ ->
                             if (PlayerActivity.musicService != null) {
-                            PlayerActivity.musicService!!.stopForeground(true)
+                            PlayerActivity.musicService!!.stopForeground(STOP_FOREGROUND_REMOVE)
                             PlayerActivity.musicService!!.mediaPlayer!!.release()
                             PlayerActivity.musicService = null}
                             exitProcess(1)
@@ -190,7 +191,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if(!PlayerActivity.isPlaying && PlayerActivity.musicService != null) {
-            PlayerActivity.musicService!!.stopForeground(true)
+            PlayerActivity.musicService!!.stopForeground(STOP_FOREGROUND_REMOVE)
             PlayerActivity.musicService!!.mediaPlayer!!.release()
             PlayerActivity.musicService = null
             exitProcess(1)
