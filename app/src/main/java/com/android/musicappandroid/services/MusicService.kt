@@ -1,4 +1,4 @@
-package com.android.musicappandroid
+package com.android.musicappandroid.services
 
 import android.app.Service
 import android.content.Intent

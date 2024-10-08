@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PlayerActivity"
+    tools:context=".activities.PlayerActivity"
     android:orientation="vertical"
     android:gravity="center" >
 
@@ -21,9 +21,9 @@
             android:layout_height="40dp"
             android:layout_marginStart="5dp"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/back_btn"
             android:padding="5dp"
             android:src="@drawable/back_icon"
+            android:contentDescription="@string/back_btn"
             app:tint="@color/black"
             tools:ignore="TouchTargetSizeCheck" />
 
@@ -39,10 +39,11 @@
             android:contentDescription="@string/music_player" />
 
         <ImageButton
+            android:id="@+id/favoriteBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
             android:background="@android:color/transparent"
+            android:layout_marginEnd="15dp"
             android:contentDescription="@string/favorite_empty_btn"
             android:src="@drawable/favorite_empty_icon"
             app:tint="@android:color/holo_red_dark"
@@ -87,7 +88,6 @@
             android:id="@+id/playPauseBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="25dp"
             android:backgroundTint="@color/light_steel_blue"
             app:icon="@drawable/pause_icon"
             app:iconSize="50dp"

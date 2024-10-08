@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
     alias(libs.plugins.kotlin.kapt)
 }
 
@@ -37,6 +38,7 @@ android {
     dataBinding {
         enable = true
     }
+
     buildFeatures {
         viewBinding = true
         dataBinding = true
@@ -58,4 +60,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.glide)
+    kapt(libs.compiler)
+
+    implementation("com.google.code.gson:gson:2.8.9")
 }

@@ -18,17 +18,17 @@
         tools:ignore="AllowBackup"
         tools:targetApi="31">
         <activity
-            android:name=".FavoriteActivity"
+            android:name=".activities.FavoriteActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
             android:exported="false" />
         <activity
-            android:name=".PlayerActivity"
+            android:name=".activities.PlayerActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
             android:exported="true">
@@ -38,7 +38,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".MusicService"/>
+        <service android:name=".services.MusicService"/>
     </application>
 
 </manifest>

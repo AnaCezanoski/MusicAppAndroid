@@ -17,8 +17,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.musicappandroid.R
+import com.android.musicappandroid.adapters.MusicAdapter
 import com.android.musicappandroid.databinding.ActivityMainBinding
+import com.android.musicappandroid.models.Music
+import com.android.musicappandroid.models.exitApplication
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -42,8 +48,17 @@ class MainActivity : AppCompatActivity() {
         binding.root.addDrawerListener(toggle)
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if(requestRuntimePermission())
+        if (requestRuntimePermission()) {
             initializeLayout()
+            FavoriteActivity.favoriteSongs = ArrayList()
+            val editor = getSharedPreferences("FAVORITES", MODE_PRIVATE)
+            val jsonString = editor.getString("FavoritesSongs", null)
+            val typeToken = object : TypeToken<ArrayList<Music>>(){}.type
+            if(jsonString != null) {
+                val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
+                FavoriteActivity.favoriteSongs.addAll(data)
+            }
+        }
 
         binding.shuffleBtn.setOnClickListener {
             val intent = Intent(this@MainActivity, PlayerActivity::class.java)
@@ -194,7 +209,15 @@ class MainActivity : AppCompatActivity() {
             PlayerActivity.musicService!!.stopForeground(STOP_FOREGROUND_REMOVE)
             PlayerActivity.musicService!!.mediaPlayer!!.release()
             PlayerActivity.musicService = null
-            exitProcess(1)
+            exitApplication()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val editor = getSharedPreferences("FAVORITES", MODE_PRIVATE).edit()
+        val jsonString = GsonBuilder().create().toJson(FavoriteActivity.favoriteSongs)
+        editor.putString("FavoritesSongs", jsonString)
+        editor.apply()
     }
 }
