@@ -64,11 +64,13 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
                     isFavorite = false
                     binding.favoriteBtn.setImageResource(R.drawable.favorite_empty_icon)
                     FavoriteActivity.favoriteSongs.removeAt(fIndex)
+                    fIndex = -1
                 }
             } else {
                 isFavorite = true
                 binding.favoriteBtn.setImageResource(R.drawable.favorite_icon)
                 FavoriteActivity.favoriteSongs.add(musicList[songPosition])
+                fIndex = FavoriteActivity.favoriteSongs.size - 1
             }
         }
 
@@ -88,7 +90,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
             setLayout()
             createMediaPlayer()
         }
-
     }
 
     private fun initializeSongQueue() {
@@ -109,6 +110,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
 
     private fun setLayout() {
         fIndex = favoriteChecker(musicList[songPosition].id)
+        isFavorite = fIndex != -1
         Glide.with(this)
             .load(musicList[songPosition].artUri)
             .apply(RequestOptions()
