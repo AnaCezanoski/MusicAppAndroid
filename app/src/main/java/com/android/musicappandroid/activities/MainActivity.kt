@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -50,7 +51,6 @@ class MainActivity : AppCompatActivity() {
             applicationContext,
             UserDatabase::class.java, "app-database"
         ).build()
-        val userDao = db.userDao()
 
         val sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE)
         val username = sharedPreferences.getString("username", null)
@@ -67,6 +67,12 @@ class MainActivity : AppCompatActivity() {
         toggle = ActionBarDrawerToggle(this, binding.root, R.string.open, R.string.close)
         binding.root.addDrawerListener(toggle)
         toggle.syncState()
+
+        val headerView = binding.navView.getHeaderView(0)
+        val userNameTV = headerView.findViewById<TextView>(R.id.user_nameTV)
+
+        val username2 = intent.getStringExtra("USERNAME")
+        userNameTV.text = username2
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (requestRuntimePermission()) {
@@ -92,21 +98,17 @@ class MainActivity : AppCompatActivity() {
         }
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.navShuffle -> Toast.makeText(baseContext, "Shuffle", Toast.LENGTH_SHORT).show()
-                R.id.navFavorites -> Toast.makeText(baseContext, "Favorites", Toast.LENGTH_SHORT).show()
-                R.id.navPlaylist -> Toast.makeText(baseContext, "Playlist", Toast.LENGTH_SHORT).show()
+                R.id.navShuffle -> Toast.makeText(baseContext, "Embaralhar", Toast.LENGTH_SHORT).show()
+                R.id.navFavorites -> Toast.makeText(baseContext, "Favoritos", Toast.LENGTH_SHORT).show()
+                R.id.navPlaylist -> Toast.makeText(baseContext, "Playlists", Toast.LENGTH_SHORT).show()
                 R.id.navExit -> {
                     val builder = MaterialAlertDialogBuilder(this)
-                    builder.setTitle("Exit")
-                        .setMessage("Close app?")
-                        .setPositiveButton("Yes") {_, _ ->
-                            if (PlayerActivity.musicService != null) {
-                            PlayerActivity.musicService!!.stopForeground(STOP_FOREGROUND_REMOVE)
-                            PlayerActivity.musicService!!.mediaPlayer!!.release()
-                            PlayerActivity.musicService = null}
-                            exitProcess(1)
+                    builder.setTitle("Logout")
+                        .setMessage("Deseja realmente fazer logout?")
+                        .setPositiveButton("Sim") { _, _ ->
+                            logout()
                         }
-                        .setNegativeButton("No"){dialog, _ ->
+                        .setNegativeButton("Não"){dialog, _ ->
                             dialog.dismiss()
                         }
                     val customDialog = builder.create()
@@ -117,6 +119,19 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    private fun logout() {
+        val sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            clear()
+            apply()
+        }
+
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
     private fun requestRuntimePermission() :Boolean {
@@ -137,7 +152,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 13) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Permissão concedida", Toast.LENGTH_SHORT).show()
                 initializeLayout()
             } else
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 13)

@@ -44,13 +44,26 @@ class RegisterActivity : AppCompatActivity() {
     private fun register() {
         val username = binding.newUsernameET.text.toString()
         val password = binding.newPasswordET.text.toString()
+        val confirmPassword = binding.confirmPasswordET.text.toString()
+
+        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (password != confirmPassword) {
+            Toast.makeText(this, "As senhas não são iguais.", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         lifecycleScope.launch {
             val existingUser = userDao.getUserByUsername(username)
             if (existingUser == null) {
                 val newUser = User(username = username, password = password)
                 userDao.insert(newUser)
-                startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+                val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                intent.putExtra("REGISTERED_USERNAME", username)
+                startActivity(intent)
                 finish()
             } else {
                 Toast.makeText(this@RegisterActivity, "Nome de usuário já existe.", Toast.LENGTH_SHORT).show()

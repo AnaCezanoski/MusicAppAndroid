@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="170dp"
-    android:padding="16dp"
+    android:layout_height="195dp"
+    android:layout_marginTop="55dp"
     android:background="@color/dark_slate_blue"
     android:orientation="vertical"
-    android:layout_marginTop="55dp"
-    >
+    android:padding="16dp">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="15dp"
+        android:id="@+id/user_image"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
         android:contentDescription="@string/app_icon"
-        android:src="@mipmap/music_player_icon_round" />
+        android:paddingTop="0dp"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/music_player_icon_round"
+        android:translationY="20dp" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/name_login"
-        android:textSize="18sp"
+        android:id="@+id/user_nameTV"
+        android:layout_width="338dp"
+        android:layout_height="41dp"
+        android:paddingTop="0dp"
+        android:text="@android:string/unknownName"
         android:textColor="@color/white"
-        android:paddingTop="5dp" />
+        android:textSize="18sp"
+        android:translationX="10dp"
+        android:translationY="20dp" />
 
 </LinearLayout>

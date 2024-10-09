@@ -24,8 +24,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
         var isPlaying: Boolean = false
         var musicService : MusicService? = null
         var isFavorite: Boolean = false
-        lateinit var binding: ActivityPlayerBinding
-        lateinit var nowPlayingId : String
         var fIndex: Int = -1
     }
 
@@ -38,10 +36,23 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
         setTheme(R.style.darkSlateBlue)
 
         playerViewModel = ViewModelProvider(this)[PlayerViewModel::class.java]
-
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         initializeLayout()
+
+        val sharedPreferences = getSharedPreferences("PlayerPreferences", MODE_PRIVATE)
+        val isPlayingFromPrefs = sharedPreferences.getBoolean("isPlaying", false)
+        val currentSongIndexFromPrefs = sharedPreferences.getInt("currentSongIndex", 0)
+
+        playerViewModel.setPlayingState(isPlayingFromPrefs)
+        playerViewModel.setCurrentSongIndex(currentSongIndexFromPrefs)
+
+        initializeSongQueue()
+
+        if (playerViewModel.isPlaying.value == true) {
+            createMediaPlayer()
+        }
 
         binding.backBtn.setOnClickListener { finish() }
         binding.playPauseBtn.setOnClickListener { if (playerViewModel.isPlaying.value == true) pauseMusic() else playMusic() }
@@ -59,6 +70,30 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
             }
         }
 
+        fIndex = favoriteChecker(musicList[songPosition].id)
+        setLayout()
+
+        playerViewModel.isPlaying.observe(this) { isPlaying ->
+            if (isPlaying) {
+                binding.playPauseBtn.setIconResource(R.drawable.pause_icon)
+            } else {
+                binding.playPauseBtn.setIconResource(R.drawable.play_icon)
+            }
+        }
+
+        playerViewModel.currentSongIndex.observe(this) { index ->
+            songPosition = index
+            setLayout()
+            createMediaPlayer()
+        }
+
+    }
+
+    private fun initializeSongQueue() {
+        musicList = ArrayList()
+        musicList.addAll(MainActivity.MusicList)
+        playerViewModel.setSongQueue(musicList)
+        setLayout()
     }
 
     private fun favoriteChecker(id: String): Int {
@@ -128,40 +163,26 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
             }
         }
     }
+
     private fun playMusic() {
-        binding.playPauseBtn.setIconResource(R.drawable.pause_icon)
-        isPlaying = true
+        playerViewModel.playPause()
         musicService!!.mediaPlayer!!.start()
     }
 
-    private fun pauseMusic () {
-        binding.playPauseBtn.setIconResource(R.drawable.play_icon)
-        isPlaying = false
+    private fun pauseMusic() {
+        playerViewModel.playPause()
         musicService!!.mediaPlayer!!.pause()
     }
 
     private fun prevNextSong(increment: Boolean) {
         if (increment) {
-            setSongPosition(increment = true)
-            setLayout()
-            createMediaPlayer()
-        } else{
-            setSongPosition(increment = false
-            )
-            setLayout()
-            createMediaPlayer()
-        }
-    }
-    private fun setSongPosition(increment: Boolean) {
-        if(increment) {
-            if(musicList.size - 1 == songPosition)
-                songPosition = 0
-            else ++songPosition
+            playerViewModel.nextSong()
         } else {
-            if(0 == songPosition)
-                songPosition = musicList.size - 1
-            else --songPosition
+            playerViewModel.previousSong()
         }
+
+        setLayout()
+        createMediaPlayer()
     }
 
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -172,5 +193,14 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
 
     override fun onServiceDisconnected(p0: ComponentName?) {
         musicService = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val sharedPreferences = getSharedPreferences("PlayerPreferences", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isPlaying", playerViewModel.isPlaying.value == true)
+        editor.putInt("currentSongIndex", playerViewModel.currentSongIndex.value ?: 0)
+        editor.apply()
     }
 }

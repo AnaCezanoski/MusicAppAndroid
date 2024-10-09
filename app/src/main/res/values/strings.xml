@@ -21,4 +21,5 @@
     <string name="entrar">Entrar</string>
     <string name="registre_se">Não possui uma conta ainda? Registre-se aqui.</string>
     <string name="registrar">Registrar</string>
+    <string name="confirme_a_senha">Confirme a senha</string>
 </resources>

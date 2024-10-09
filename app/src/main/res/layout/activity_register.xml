@@ -27,6 +27,16 @@
         android:minHeight="48dp"
         tools:ignore="VisualLintTextFieldSize" />
 
+    <EditText
+        android:id="@+id/confirmPasswordET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:hint="@string/confirme_a_senha"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        tools:ignore="VisualLintTextFieldSize" />
+
     <Button
         android:id="@+id/btn_register"
         android:layout_width="match_parent"
