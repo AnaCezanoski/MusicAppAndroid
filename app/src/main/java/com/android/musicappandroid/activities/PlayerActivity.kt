@@ -60,9 +60,11 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
         binding.nextBtn.setOnClickListener { prevNextSong(increment = true) }
         binding.favoriteBtn.setOnClickListener {
             if(isFavorite){
-                isFavorite = false
-                binding.favoriteBtn.setImageResource(R.drawable.favorite_empty_icon)
-                FavoriteActivity.favoriteSongs.removeAt(fIndex)
+                if (fIndex != -1) {
+                    isFavorite = false
+                    binding.favoriteBtn.setImageResource(R.drawable.favorite_empty_icon)
+                    FavoriteActivity.favoriteSongs.removeAt(fIndex)
+                }
             } else {
                 isFavorite = true
                 binding.favoriteBtn.setImageResource(R.drawable.favorite_icon)
@@ -92,15 +94,15 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
     private fun initializeSongQueue() {
         musicList = ArrayList()
         musicList.addAll(MainActivity.MusicList)
-        playerViewModel.setSongQueue(musicList)
+        playerViewModel.setSongQueue(musicList, songPosition)
         setLayout()
     }
 
     private fun favoriteChecker(id: String): Int {
         FavoriteActivity.favoriteSongs.forEachIndexed { index, music ->
-            return if (id == music.id) {
-                index
-            } else -1
+            if (id == music.id) {
+                return index
+            }
         }
         return -1
     }
@@ -121,15 +123,18 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
 
     private fun createMediaPlayer() {
         try {
+            val currentSong = playerViewModel.getCurrentSong()
             if (musicService!!.mediaPlayer == null) musicService!!.mediaPlayer = MediaPlayer()
             musicService!!.mediaPlayer!!.reset()
-            musicService!!.mediaPlayer!!.setDataSource(musicList[songPosition].path)
-            musicService!!.mediaPlayer!!.prepare()
-            musicService!!.mediaPlayer!!.start()
+            currentSong?.let {
+                musicService!!.mediaPlayer!!.setDataSource(it.path)
+                musicService!!.mediaPlayer!!.prepare()
+                musicService!!.mediaPlayer!!.start()
+            }
             isPlaying = true
             binding.playPauseBtn.setIconResource(R.drawable.pause_icon)
         } catch (e: Exception) {
-            return
+            e.printStackTrace()
         }
     }
 
@@ -137,41 +142,36 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
         songPosition = intent.getIntExtra("index", 0)
         when(intent.getStringExtra("class")) {
             "FavoriteAdapter" -> {
-                val intent = Intent(this, MusicService::class.java)
-                bindService(intent, this, BIND_AUTO_CREATE)
-                startService(intent)
-                musicList = ArrayList()
-                musicList.addAll(FavoriteActivity.favoriteSongs)
-                setLayout()
+                startAndBindMusicService()
+                musicList = ArrayList(FavoriteActivity.favoriteSongs)
             }
             "MusicAdapter" -> {
-                val intent = Intent(this, MusicService::class.java)
-                bindService(intent, this, BIND_AUTO_CREATE)
-                startService(intent)
-                musicList = ArrayList()
-                musicList.addAll(MainActivity.MusicList)
-                setLayout()
+                startAndBindMusicService()
+                musicList = ArrayList(MainActivity.MusicList)
             }
             "MainActivity" -> {
-                val intent = Intent(this, MusicService::class.java)
-                bindService(intent, this, BIND_AUTO_CREATE)
-                startService(intent)
-                musicList = ArrayList()
-                musicList.addAll(MainActivity.MusicList)
+                startAndBindMusicService()
+                musicList = ArrayList(MainActivity.MusicList)
                 musicList.shuffle()
-                setLayout()
             }
         }
+        setLayout()
+    }
+
+    private fun startAndBindMusicService() {
+        val intent = Intent(this, MusicService::class.java)
+        bindService(intent, this, BIND_AUTO_CREATE)
+        startService(intent)
     }
 
     private fun playMusic() {
-        playerViewModel.playPause()
         musicService!!.mediaPlayer!!.start()
+        playerViewModel.setPlayingState(true)
     }
 
     private fun pauseMusic() {
-        playerViewModel.playPause()
         musicService!!.mediaPlayer!!.pause()
+        playerViewModel.setPlayingState(false)
     }
 
     private fun prevNextSong(increment: Boolean) {
@@ -188,6 +188,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
         val binder = service as MusicService.MyBinder
         musicService = binder.currentService()
+        songPosition = intent.getIntExtra("index", 0)
         createMediaPlayer()
     }
 

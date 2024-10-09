@@ -21,13 +21,9 @@ class PlayerViewModel : ViewModel() {
         _songQueue.value = emptyList()
     }
 
-    fun playPause() {
-        _isPlaying.value = !(_isPlaying.value ?: true)
-    }
-
-    fun setSongQueue(queue: List<Music>) {
+    fun setSongQueue(queue: List<Music>, initialIndex: Int = 0) {
         _songQueue.value = queue
-        _currentSongIndex.value = 0
+        _currentSongIndex.value = initialIndex
     }
 
     fun nextSong() {

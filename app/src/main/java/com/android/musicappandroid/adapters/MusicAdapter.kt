@@ -47,11 +47,6 @@ class MusicAdapter(private val context: Context, private val musicList: ArrayLis
         return musicList.size
     }
 
-//    fun updateMusicList(searchList: ArrayList<Music>) {
-//        musicList = ArrayList()
-//        musicList.addAll(searchList)
-//        notifyDataSetChanged()
-//    }
 
     private fun sendIntent(ref: String, pos: Int) {
         val intent = Intent(context, PlayerActivity::class.java)
