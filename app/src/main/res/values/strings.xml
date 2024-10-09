@@ -16,4 +16,9 @@
     <string name="name_login">Name Login</string>
     <string name="exit">Exit</string>
     <string name="song_album">Song Album</string>
+    <string name="nome_de_usuario">Nome de Usuário</string>
+    <string name="senha">Senha</string>
+    <string name="entrar">Entrar</string>
+    <string name="registre_se">Não possui uma conta ainda? Registre-se aqui.</string>
+    <string name="registrar">Registrar</string>
 </resources>

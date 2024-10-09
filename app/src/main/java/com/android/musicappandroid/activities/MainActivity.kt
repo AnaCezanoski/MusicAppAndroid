@@ -1,5 +1,6 @@
-package com.android.musicappandroid
+package com.android.musicappandroid.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Service.STOP_FOREGROUND_REMOVE
 import android.content.Intent
@@ -17,11 +18,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
 import com.android.musicappandroid.R
 import com.android.musicappandroid.adapters.MusicAdapter
+import com.android.musicappandroid.databases.UserDatabase
 import com.android.musicappandroid.databinding.ActivityMainBinding
 import com.android.musicappandroid.models.Music
-import com.android.musicappandroid.models.exitApplication
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var musicAdapter: MusicAdapter
 
+
     companion object {
         lateinit var MusicList: ArrayList<Music>
     }
@@ -42,11 +45,29 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.darkSlateBlueNav)
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            UserDatabase::class.java, "app-database"
+        ).build()
+        val userDao = db.userDao()
+
+        val sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE)
+        val username = sharedPreferences.getString("username", null)
+
+        if (username == null) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         toggle = ActionBarDrawerToggle(this, binding.root, R.string.open, R.string.close)
         binding.root.addDrawerListener(toggle)
         toggle.syncState()
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (requestRuntimePermission()) {
             initializeLayout()
@@ -99,9 +120,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestRuntimePermission() :Boolean {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 13)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 13)
             return false
         }
         return true
@@ -119,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
                 initializeLayout()
             } else
-                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 13)
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 13)
         }
     }
 
@@ -209,7 +230,7 @@ class MainActivity : AppCompatActivity() {
             PlayerActivity.musicService!!.stopForeground(STOP_FOREGROUND_REMOVE)
             PlayerActivity.musicService!!.mediaPlayer!!.release()
             PlayerActivity.musicService = null
-            exitApplication()
+            ActivityCompat.finishAffinity(this)
         }
     }
 

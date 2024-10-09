@@ -1,8 +1,9 @@
-package com.android.musicappandroid
+package com.android.musicappandroid.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.android.musicappandroid.R
 import com.android.musicappandroid.adapters.FavoriteAdapter
 import com.android.musicappandroid.databinding.ActivityFavoriteBinding
 import com.android.musicappandroid.models.Music

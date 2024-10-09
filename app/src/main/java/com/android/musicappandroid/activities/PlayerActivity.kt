@@ -1,7 +1,5 @@
 package com.android.musicappandroid.activities
 
-import com.android.musicappandroid.FavoriteActivity
-import com.android.musicappandroid.MainActivity
 import com.android.musicappandroid.R
 import com.android.musicappandroid.models.Music
 import com.android.musicappandroid.services.MusicService
@@ -12,7 +10,9 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.android.musicappandroid.databinding.ActivityPlayerBinding
+import com.android.musicappandroid.viewmodels.PlayerViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
@@ -29,16 +29,22 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
         var fIndex: Int = -1
     }
 
+    private lateinit var playerViewModel: PlayerViewModel
+
     private lateinit var binding: ActivityPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.darkSlateBlue)
+
+        playerViewModel = ViewModelProvider(this)[PlayerViewModel::class.java]
+
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initializeLayout()
+
         binding.backBtn.setOnClickListener { finish() }
-        binding.playPauseBtn.setOnClickListener { if (isPlaying) pauseMusic() else playMusic() }
+        binding.playPauseBtn.setOnClickListener { if (playerViewModel.isPlaying.value == true) pauseMusic() else playMusic() }
         binding.previousBtn.setOnClickListener { prevNextSong(increment = false) }
         binding.nextBtn.setOnClickListener { prevNextSong(increment = true) }
         binding.favoriteBtn.setOnClickListener {
@@ -52,6 +58,16 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection {
                 FavoriteActivity.favoriteSongs.add(musicList[songPosition])
             }
         }
+
+    }
+
+    private fun favoriteChecker(id: String): Int {
+        FavoriteActivity.favoriteSongs.forEachIndexed { index, music ->
+            return if (id == music.id) {
+                index
+            } else -1
+        }
+        return -1
     }
 
     private fun setLayout() {
